@@ -1,0 +1,53 @@
+* OpenGL
+** Shaders
+   These are programs that run on the GPU that help to do the graphics rendering.
+   Most of the processing is done by two shaders: Vertex Shaders and Pixel Shaders
+*** Vertex Shaders
+	These shaders are used to render vertices in a graphics render. Less expensive
+	compared to pixel shaders.
+*** Pixel Shaders
+	These shader are used to render the individual pixels in the opengl context.
+	Therefore processing here is more expensive compared to vertex shaders.
+*** Coding in OpenGL
+**** Create and Bind Vertex Array Object -> glGenVertexArrays(), glBindVertexArray()
+	 The glVertexAttribPointer() function needs a vertex array object to bound before
+	 calling it. A Vertex Array Object is an obj that defines how the vertex attributes
+	 are stored in a vertex buffer obj
+**** Create Program Object -> glCreateProgram()
+	 A program object is an object to which shaders can be attached to.
+**** Create Shader Object -> glCreateShader()
+	 A shader object maintains the string source code of the shader. These are
+	 attached to program objects
+**** Replace(Set) Shader object source code -> glShaderSource()
+**** Compile Shader Object -> glCompileShader()
+**** Attach Shaders Object to Program -> glAttachShader()
+**** Link Program Object -> glLinkProgram()
+	 This links the po. Executables are created out of the attached shaders to be
+	 run on the graphics processor(vertex processor, fragment processor)
+**** Validate Program object -> glValidateProgram()
+	 Check whether the executables contained in program can execute in current OpenGL
+	 state.
+**** Delete shader objects -> glDeleteShader()
+**** Bind Shader -> glUseProgram()
+** Index Buffer
+   This helps in avoiding duplicating vertex information in vertex buffers. This gives
+   the rendering API the index of the vertex to be rendered from the vertex buffer.
+   Use the glDrawElements() fn to use index buffer for rendering
+** Uniforms
+   Basically a method to send data from CPU to GPU. These are set per draw call unlike
+   vertex buffers which are set per vertex.
+*** Coding in OpenGL
+	After binding the shader using glUseProgram(prog)
+**** Add Uniform to shader source code
+	 uniform <type> <varname>
+**** Get Uniform location from shader -> glGetUniformLocation()
+**** Set Uniform value -> glUniformxx()
+	 the xx depends on the type of uniform. For vec4 floats it will be 4f.
+** Vertex Array Object
+   This object is used to store the layout of a vertex buffer object. Fn calls to
+   glVertexAttribPointer() to set the layout is applied to the bound vertex array object
+   and the bound GL_ARRAY_BUFFER. This code links the two together therefore binding the
+   vao will in turn bind the vbo. If a new vbo is bound and this fn is called with a different
+   index position the new vbo is bound to the vao with index pointing to the new vbo.
+   In compat opengl version a default vao is created however in core version its not and
+   has to be done explicitly.
