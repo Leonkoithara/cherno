@@ -37,4 +37,4 @@ $(OBJS) : $(OBJ_DIR)/%.o : $(SRC_DIR)/%.cpp
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean :
-	rm -r $(OBJ_DIR)
+	rm -r $(OBJ_DIR)/*
