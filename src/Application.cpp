@@ -1,8 +1,6 @@
-#include "index_buffer.h"
+#include "renderer.h"
 #include "vertex_buffer.h"
-#include "vertex_array.h"
 #include "vertex_buffer_layout.h"
-#include "shader.h"
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -52,6 +50,8 @@ int main(void)
 		2, 3, 0
 	};
 
+	Renderer renderer;
+
 	VertexArray *va = new VertexArray();
 	va->bind();
 
@@ -74,10 +74,11 @@ int main(void)
     while (!glfwWindowShouldClose(window))
     {
         /* Render here */
-        glClear(GL_COLOR_BUFFER_BIT);
+		renderer.clear();
 
 		shader->set_uniform4f("u_color", r, 0.0f, 1.0f, 1.0f);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
+
+		renderer.draw(*va, *ib, *shader);
 
 		if (r > 1.0f)
 		{
