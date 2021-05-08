@@ -12,6 +12,11 @@ mkdir bin
 make
 ```
 
+## opengl.org
+This is a document I have written that captures the stuff the instructor is teaching me. Some of
+it has also come from reading the documentation at: [http://docs.gl][docs.gl]
+This can be viewed with any normal text editor but for maximum effect use the emacs org mode.
+
 ## Developing tips
 I will probably not merge any major changes in code. One advise I'll give you is, while developing
 sometimes you might have to make clean since the non-modified objs might be out of date and
