@@ -70,7 +70,7 @@ unsigned int Shader::compile_shader(unsigned int type, std::string &shader_src)
 	if (!success)
 	{
 		glGetShaderInfoLog(shader, 512, NULL, infoLog);
-		std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+		std::cout << "ERROR::SHADER::" << (type==GL_VERTEX_SHADER? "VERTEX": "FRAGMENT") << "::COMPILATION_FAILED\n" << infoLog << std::endl;
 	}
 
 	return shader;
@@ -103,6 +103,12 @@ unsigned int Shader::create_shader(std::string &vertex_shader, std::string &frag
 	glDeleteShader(fs);
 
 	return program;
+}
+
+void Shader::set_uniform1i(const std::string &uname, int value)
+{
+	int location = get_uniform_loc(uname);
+	glUniform1i(location, value);
 }
 
 void Shader::set_uniform4f(const std::string &uname, float v0, float v1, float v2, float v3)

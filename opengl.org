@@ -51,3 +51,22 @@
    index position the new vbo is bound to the vao with index pointing to the new vbo.
    In compat opengl version a default vao is created however in core version its not and
    has to be done explicitly.
+** Textures
+   To use textures in opengl it needs to loaded in a readable format by a third party lib
+   in this case we are using the stb_image library. First we set the active texture slot on
+   which the subsequent texture state calls affect. Next we generate a texture object
+   and bind it to a target (sets the dimensionality of texture obj).
+   Next we modify the target's parameter value as per our needs
+   Now we add texture coords(what % of image is vertex at?) to the vertex attributes this we
+   send to the shader as well which forwards it to the fragment shader so that it can sample
+   the texture to calculate the color of the pixel
+*** Coding in OpenGL
+**** Load image -> stbi_load()
+**** Activate texuture slot -> glActiveTexture()
+**** Create texture obj -> glGenTexture()
+**** Bind texture obj to desired dim -> glBindTexture()
+	 In this case since this is a 2D texture we use GL_TEXTURE_2D
+**** Modify target parameters
+	 parameters to modify here are: GL_TEXTURE_MIN_FILTER, GL_TEXTURE_MAG_FILTER,
+	                                GL_TEXTURE_WRAP_S, GL_TEXTURE_WRAP_T
+**** Specify texture to Opengl -> glTexImage2D()

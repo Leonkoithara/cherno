@@ -1,11 +1,20 @@
 #include "renderer.h"
 #include "vertex_buffer.h"
 #include "vertex_buffer_layout.h"
+#include "texture.h"
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
 #include <iostream>
+
+void print_all_errors()
+{
+	while(auto error = glGetError())
+	{
+		std::cout << "OpenGL error: " << error << std::endl;
+	}
+}
 
 int main(void)
 {
@@ -39,10 +48,10 @@ int main(void)
 	std::cout << glGetString(GL_VERSION) << std::endl;
 
 	float arr[] = {
-		-0.5f, -0.5f, //0
- 		 0.5f, -0.5f, //1
-		 0.5f,  0.5f, //2
-		-0.5f,  0.5f, //3
+		-0.5f, -0.5f, 0.0f, 0.0f, //0
+		 0.5f, -0.5f, 1.0f, 0.0f, //1
+		 0.5f,  0.5f, 1.0f, 1.0f, //2
+		-0.5f,  0.5f, 0.0f, 1.0f  //3
 	};
 
 	unsigned int indices[] = {
@@ -50,45 +59,39 @@ int main(void)
 		2, 3, 0
 	};
 
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	Renderer renderer;
 
 	VertexArray *va = new VertexArray();
 	va->bind();
 
-	VertexBuffer *vb = new VertexBuffer((const void*)arr, 4 * 2 * sizeof(float));
+	VertexBuffer *vb = new VertexBuffer((const void*)arr, 4 * 4 * sizeof(float));
 
 	IndexBuffer *ib = new IndexBuffer(indices, 6);
 
-	
 	VertexBufferLayout *layout = new VertexBufferLayout();
 	layout->push_element<float>(2);
+	layout->push_element<float>(2);
 
-	Shader *shader = new Shader("res/shaders/basic.shader");
+	Texture *texture = new Texture("res/textures/blue.png");
+	texture->bind(0);
+
+	Shader *shader = new Shader("res/shaders/texture.shader");
 	shader->bind();
 
 	va->add_buffer(vb, layout);
 
-	shader->set_uniform4f("u_color", 0.0f, 0.0f, 1.0f, 1.0f);
-	float increment=0.01f, r=0.0f;
+	shader->set_uniform1i("u_texture", 0);
+	
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
         /* Render here */
 		renderer.clear();
 
-		shader->set_uniform4f("u_color", r, 0.0f, 1.0f, 1.0f);
-
 		renderer.draw(*va, *ib, *shader);
-
-		if (r > 1.0f)
-		{
-			increment = -0.01f;
-		}
-		else if(r < 0.0f)
-		{
-			increment = 0.01f;
-		}
-		r += increment;
 		
         /* Swap front and back buffers */
         glfwSwapBuffers(window);

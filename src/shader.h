@@ -26,7 +26,9 @@ public:
 	void bind();
 	void unbind();
 
+	void set_uniform1i(const std::string&, int);
 	void set_uniform4f(const std::string&, float, float, float, float);
+	
 	int get_uniform_loc(const std::string&);
 };
 
