@@ -10,8 +10,11 @@ BIN_DIR = bin
 #OUT_BIN specifies the name of our exectuable
 OUT_BIN = $(BIN_DIR)/Application
 
+INC=-I$(SRC_DIR)/vendor
+
 SRCS = $(wildcard $(SRC_DIR)/*.cpp)
 OBJS = $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SRCS))
+VENDOR_OBJS = $(OBJ_DIR)/vendor/*.o
 
 #CC specifies which compiler we're using
 CC = g++
@@ -31,10 +34,10 @@ LDFLAGS = -lglfw -lGL -lGLEW
 all : $(OUT_BIN)
 
 $(OUT_BIN) : $(OBJS)
-	$(CC) $^ $(LDFLAGS) -o $(OUT_BIN)
+	$(CC) $^ $(VENDOR_OBJS) $(LDFLAGS) -o $(OUT_BIN)
 
 $(OBJS) : $(OBJ_DIR)/%.o : $(SRC_DIR)/%.cpp
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) $(INC) -c $< -o $@
 
 clean :
-	rm -r $(OBJ_DIR)/*
+	rm -r $(OBJ_DIR)/*.o
