@@ -24,7 +24,7 @@ CC = g++
 CFLAGS = -w
 
 #LINKER_FLAGS specifies the libraries we're linking against
-LDFLAGS = -lglfw -lGL -lGLEW
+LDFLAGS = -lglfw -lGL -lGLEW -ldl
 
 #Tell make all is not a real target
 .PHONY: all

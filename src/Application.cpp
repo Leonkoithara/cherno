@@ -1,7 +1,12 @@
 #include "renderer.h"
+#include "vendor/imgui/imgui.h"
 #include "vertex_buffer.h"
 #include "vertex_buffer_layout.h"
 #include "texture.h"
+
+#include "vendor/imgui/imgui.h"
+#include "vendor/imgui/imgui_impl_glfw.h"
+#include "vendor/imgui/imgui_impl_opengl3.h"
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -30,7 +35,7 @@ int main(void)
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(640, 640, "Hello World", NULL, NULL);
+    window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -46,6 +51,10 @@ int main(void)
 		std::cout << "Error loading glew" << std::endl;
 
 	std::cout << glGetString(GL_VERSION) << std::endl;
+
+	ImGui::CreateContext();
+	ImGui_ImplGlfw_InitForOpenGL(window, true);
+	ImGui_ImplOpenGL3_Init("#version 330");
 
 	float arr[] = {
 		-0.5f, -0.5f, 0.0f, 0.0f, //0
@@ -84,15 +93,29 @@ int main(void)
 	va->add_buffer(vb, layout);
 
 	shader->set_uniform1i("u_texture", 0);
-	
+	shader->set_uniform4f("u_color", 1.0f, 1.0f, 1.0f, 1.0f);
+
+	ImVec4 col_mul(1.0f, 1.0f, 1.0f, 1.0f);
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
+
+		shader->set_uniform4f("u_color", col_mul.x, col_mul.y, col_mul.z, col_mul.w);
         /* Render here */
 		renderer.clear();
 
 		renderer.draw(*va, *ib, *shader);
-		
+
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
+
+		ImGui::Begin("Hello Imgui");
+		ImGui::ColorEdit4("color_multiplier", (float*)&col_mul);
+		ImGui::End();
+
+		ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
 
@@ -105,6 +128,9 @@ int main(void)
 	delete shader;
 	delete va;
 
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
     glfwTerminate();
     return 0;
 }
