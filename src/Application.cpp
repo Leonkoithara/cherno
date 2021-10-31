@@ -1,5 +1,6 @@
 #include "scenes/scene_manager.h"
 #include "scenes/textured_imgui.h"
+#include "scenes/filled_circle.h"
 
 #include "vendor/imgui/imgui.h"
 #include "vendor/imgui/imgui_impl_glfw.h"
@@ -60,6 +61,7 @@ int main(void)
 	SceneMenu scenemenu;
 
 	scenemenu.register_scene<TexturedImgui>("Textured Imgui");
+	scenemenu.register_scene<FilledCircle>("Filled Circle");
 
     while (!glfwWindowShouldClose(window))
     {
@@ -91,6 +93,10 @@ int main(void)
         glfwPollEvents();
     }
 
+	std::cout << "Exiting" << std::endl;
+
+	if (scene != &scenemenu)
+	    delete scene;
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
