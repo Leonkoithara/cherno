@@ -1,7 +1,5 @@
 #include "textured_imgui.h"
 
-#include "../texture.h"
-
 TexturedImgui::TexturedImgui() :
 	offsets_{0.0f, 0.0f, 0.0f}
 {
@@ -18,21 +16,21 @@ TexturedImgui::TexturedImgui() :
 	va_ = new VertexArray();
 	va_->bind();
 
-	VertexBuffer *vb = new VertexBuffer((const void*)vbo, 4 * 4 * sizeof(float));
+	vb_ = new VertexBuffer((const void*)vbo, 4 * 4 * sizeof(float));
 
 	ib_ = new IndexBuffer(ibo, 6);
 
-	VertexBufferLayout *layout = new VertexBufferLayout();
-	layout->push_element<float>(2);
-	layout->push_element<float>(2);
+	VertexBufferLayout layout;
+	layout.push_element<float>(2);
+	layout.push_element<float>(2);
 
-	Texture *texture = new Texture("res/textures/blue.png");
-	texture->bind(0);
+	texture_ = new Texture("res/textures/blue.png");
+	texture_->bind(0);
 
 	shader_ = new Shader("res/shaders/texture.shader");
 	shader_->bind();
 
-	va_->add_buffer(vb, layout);
+	va_->add_buffer(vb_, &layout);
 
 	shader_->set_uniform1i("u_texture", 0);
 	shader_->set_uniform4f("u_color", 1.0f, 1.0f, 1.0f, 1.0f);
@@ -45,7 +43,15 @@ TexturedImgui::TexturedImgui() :
 	shader_->set_uniform_mat4("u_model", glm::value_ptr(model_));
 }
 
-TexturedImgui::~TexturedImgui() {}
+TexturedImgui::~TexturedImgui()
+{
+	delete va_;
+	delete ib_;
+	delete shader_;
+
+	delete vb_;
+	delete texture_;
+}
 
 void TexturedImgui::update(float deltatime)
 {

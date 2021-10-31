@@ -2,6 +2,7 @@
 #include "../vertex_buffer.h"
 #include "../index_buffer.h"
 #include "../shader.h"
+#include "../texture.h"
 #include "../vendor/imgui/imgui.h"
 #include "../vendor/glm/glm.hpp"
 #include "../vendor/glm/gtc/matrix_transform.hpp"
@@ -21,6 +22,9 @@ private:
 	float offsets_[3];
 	glm::mat4 model_;
 	glm::mat4 projection_;
+
+	Texture *texture_;
+	VertexBuffer *vb_;
 	
 public:
 	TexturedImgui();

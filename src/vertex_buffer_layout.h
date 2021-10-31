@@ -31,7 +31,7 @@ private:
 public:
 	VertexBufferLayout()
 		:stride(0) {}
-	~VertexBufferLayout();
+	~VertexBufferLayout() {}
 
 	std::vector<vertex_buff_elements> get_elements() { return elements; }
 	unsigned int get_stride() { return stride; }
