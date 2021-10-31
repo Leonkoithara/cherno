@@ -1,5 +1,6 @@
 #include "renderer.h"
 #include "vendor/imgui/imgui.h"
+#include "vendor/glm/ext/matrix_transform.hpp"
 #include "vertex_buffer.h"
 #include "vertex_buffer_layout.h"
 #include "texture.h"
@@ -7,6 +8,9 @@
 #include "vendor/imgui/imgui.h"
 #include "vendor/imgui/imgui_impl_glfw.h"
 #include "vendor/imgui/imgui_impl_opengl3.h"
+#include "vendor/glm/glm.hpp"
+#include "vendor/glm/gtc/matrix_transform.hpp"
+#include "vendor/glm/gtc/type_ptr.hpp"
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -57,10 +61,10 @@ int main(void)
 	ImGui_ImplOpenGL3_Init("#version 330");
 
 	float arr[] = {
-		-0.5f, -0.5f, 0.0f, 0.0f, //0
-		 0.5f, -0.5f, 1.0f, 0.0f, //1
-		 0.5f,  0.5f, 1.0f, 1.0f, //2
-		-0.5f,  0.5f, 0.0f, 1.0f  //3
+		100.0f, 100.0f, 0.0f, 0.0f, //0
+		 300.0f, 100.0f, 1.0f, 0.0f, //1
+		 300.0f,  300.0f, 1.0f, 1.0f, //2
+		100.0f,  300.0f, 0.0f, 1.0f  //3
 	};
 
 	unsigned int indices[] = {
@@ -96,11 +100,16 @@ int main(void)
 	shader->set_uniform4f("u_color", 1.0f, 1.0f, 1.0f, 1.0f);
 
 	ImVec4 col_mul(1.0f, 1.0f, 1.0f, 1.0f);
+	float offsets[] = {0.0f, 0.0f, 0.0f};
+	glm::mat4 ortho = glm::ortho(0.0f, 640.0f, 0.0f, 480.0f);
+	shader->set_uniform_mat4("u_projection", glm::value_ptr(ortho));
+	glm::mat4 model = glm::mat4(1.0f);
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
-
+		model = glm::translate(model, glm::vec3(offsets[0], offsets[1], offsets[2]));
 		shader->set_uniform4f("u_color", col_mul.x, col_mul.y, col_mul.z, col_mul.w);
+		shader->set_uniform_mat4("u_model", glm::value_ptr(model));
         /* Render here */
 		renderer.clear();
 
@@ -112,6 +121,7 @@ int main(void)
 
 		ImGui::Begin("Hello Imgui");
 		ImGui::ColorEdit4("color_multiplier", (float*)&col_mul);
+		ImGui::SliderFloat3("xyz offset", offsets, -1.0f, 1.0f);
 		ImGui::End();
 
 		ImGui::Render();

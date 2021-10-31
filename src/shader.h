@@ -28,6 +28,7 @@ public:
 
 	void set_uniform1i(const std::string&, int);
 	void set_uniform4f(const std::string&, float, float, float, float);
+	void set_uniform_mat4(const std::string&, const float*);
 	
 	int get_uniform_loc(const std::string&);
 };
