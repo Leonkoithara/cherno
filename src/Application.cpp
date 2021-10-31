@@ -5,6 +5,8 @@
 #include "vertex_buffer_layout.h"
 #include "texture.h"
 
+#include "scenes/textured_imgui.h"
+
 #include "vendor/imgui/imgui.h"
 #include "vendor/imgui/imgui_impl_glfw.h"
 #include "vendor/imgui/imgui_impl_opengl3.h"
@@ -60,68 +62,26 @@ int main(void)
 	ImGui_ImplGlfw_InitForOpenGL(window, true);
 	ImGui_ImplOpenGL3_Init("#version 330");
 
-	float arr[] = {
-		100.0f, 100.0f, 0.0f, 0.0f, //0
-		 300.0f, 100.0f, 1.0f, 0.0f, //1
-		 300.0f,  300.0f, 1.0f, 1.0f, //2
-		100.0f,  300.0f, 0.0f, 1.0f  //3
-	};
-
-	unsigned int indices[] = {
-		0, 1, 2,
-		2, 3, 0
-	};
-
 	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);;
 
-	Renderer renderer;
+	TexturedImgui scene1;
 
-	VertexArray *va = new VertexArray();
-	va->bind();
-
-	VertexBuffer *vb = new VertexBuffer((const void*)arr, 4 * 4 * sizeof(float));
-
-	IndexBuffer *ib = new IndexBuffer(indices, 6);
-
-	VertexBufferLayout *layout = new VertexBufferLayout();
-	layout->push_element<float>(2);
-	layout->push_element<float>(2);
-
-	Texture *texture = new Texture("res/textures/blue.png");
-	texture->bind(0);
-
-	Shader *shader = new Shader("res/shaders/texture.shader");
-	shader->bind();
-
-	va->add_buffer(vb, layout);
-
-	shader->set_uniform1i("u_texture", 0);
-	shader->set_uniform4f("u_color", 1.0f, 1.0f, 1.0f, 1.0f);
-
-	ImVec4 col_mul(1.0f, 1.0f, 1.0f, 1.0f);
-	float offsets[] = {0.0f, 0.0f, 0.0f};
-	glm::mat4 ortho = glm::ortho(0.0f, 640.0f, 0.0f, 480.0f);
-	shader->set_uniform_mat4("u_projection", glm::value_ptr(ortho));
-	glm::mat4 model = glm::mat4(1.0f);
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
-		model = glm::translate(model, glm::vec3(offsets[0], offsets[1], offsets[2]));
-		shader->set_uniform4f("u_color", col_mul.x, col_mul.y, col_mul.z, col_mul.w);
-		shader->set_uniform_mat4("u_model", glm::value_ptr(model));
-        /* Render here */
-		renderer.clear();
+		scene1.update(0.0f);
+		scene1.render();
 
-		renderer.draw(*va, *ib, *shader);
+        /* Render here */
 
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 
+
 		ImGui::Begin("Hello Imgui");
-		ImGui::ColorEdit4("color_multiplier", (float*)&col_mul);
-		ImGui::SliderFloat3("xyz offset", offsets, -1.0f, 1.0f);
+		scene1.imgui_update();
 		ImGui::End();
 
 		ImGui::Render();
@@ -132,11 +92,6 @@ int main(void)
         /* Poll for and process events */
         glfwPollEvents();
     }
-
-	delete vb;
-	delete ib;
-	delete shader;
-	delete va;
 
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();

@@ -18,7 +18,7 @@ find_package(GLEW REQUIRED)
 include_directories(${GLEW_INCLUDE_DIRS})
 
 
-file(GLOB SOURCES src/*.cpp)
+file(GLOB SOURCES src/*.cpp src/scenes/*.cpp)
 file(GLOB LIB_SOURCES src/vendor/*/*.cpp)
 
 include_directories(src/vendor)
