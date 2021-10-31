@@ -1,18 +1,9 @@
-#include "renderer.h"
-#include "vendor/imgui/imgui.h"
-#include "vendor/glm/ext/matrix_transform.hpp"
-#include "vertex_buffer.h"
-#include "vertex_buffer_layout.h"
-#include "texture.h"
-
+#include "scenes/scene_manager.h"
 #include "scenes/textured_imgui.h"
 
 #include "vendor/imgui/imgui.h"
 #include "vendor/imgui/imgui_impl_glfw.h"
 #include "vendor/imgui/imgui_impl_opengl3.h"
-#include "vendor/glm/glm.hpp"
-#include "vendor/glm/gtc/matrix_transform.hpp"
-#include "vendor/glm/gtc/type_ptr.hpp"
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -65,31 +56,38 @@ int main(void)
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);;
 
-	TexturedImgui scene1;
+	SceneTemplate *scene;
+	SceneMenu scenemenu;
 
-    /* Loop until the user closes the window */
+	scenemenu.register_scene<TexturedImgui>("Textured Imgui");
+
     while (!glfwWindowShouldClose(window))
     {
-		scene1.update(0.0f);
-		scene1.render();
-
-        /* Render here */
-
+		scene = scenemenu.get_current_scene();
+		scene->update(0.0f);
+		scene->render();
+		
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 
+		ImGui::Begin("Hello User");
 
-		ImGui::Begin("Hello Imgui");
-		scene1.imgui_update();
+		if(scene != &scenemenu && ImGui::Button("Back"))
+		{
+			delete scene;
+			scenemenu.set_current_scene(&scenemenu);
+			scene = scenemenu.get_current_scene();
+		}
+		scene->imgui_update();
+		
 		ImGui::End();
 
 		ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-        /* Swap front and back buffers */
+
         glfwSwapBuffers(window);
 
-        /* Poll for and process events */
         glfwPollEvents();
     }
 

@@ -1,7 +1,6 @@
 #include "scene_manager.h"
 #include "../vertex_buffer.h"
 #include "../index_buffer.h"
-#include "../renderer.h"
 #include "../shader.h"
 #include "../vendor/imgui/imgui.h"
 #include "../vendor/glm/glm.hpp"
@@ -10,7 +9,7 @@
 
 #include <iostream>
 
-class TexturedImgui : SceneManager
+class TexturedImgui : public SceneTemplate
 {
 private:
 	VertexArray *va_;
