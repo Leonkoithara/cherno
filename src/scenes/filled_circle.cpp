@@ -30,7 +30,7 @@ FilledCircle::FilledCircle()
 
 	glm::mat4 ortho_proj = glm::ortho(0.0f, 640.0f, 0.0f, 480.0f);
 	shader_->set_uniform_mat4("u_projection", glm::value_ptr(ortho_proj));
-	shader_->set_uniform1f("u_radius", 0.1f);
+	shader_->set_uniform1f("u_radius", 0.05f);
 	shader_->set_uniform2f("u_view_dim", 480.0f, 480.0f);
 }
 
@@ -47,4 +47,9 @@ void FilledCircle::render()
 {
 	renderer_.clear();
 	renderer_.draw(*va_, *ib_, *shader_);
+}
+
+void FilledCircle::mouse_click_event(double x, double y, int button, int action, int mods)
+{
+	std::cout << x << " " << y << std::endl;
 }

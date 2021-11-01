@@ -9,6 +9,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#include <functional>
 #include <iostream>
 
 void print_all_errors()
@@ -18,6 +19,12 @@ void print_all_errors()
 		std::cout << "OpenGL error: " << error << std::endl;
 	}
 }
+
+double mousex, mousey;
+SceneTemplate *scene;
+
+static void cursor_position_callback(GLFWwindow *, double, double);
+static void mouse_button_callback(GLFWwindow *, int, int, int);
 
 int main(void)
 {
@@ -50,6 +57,9 @@ int main(void)
 
 	std::cout << glGetString(GL_VERSION) << std::endl;
 
+	glfwSetCursorPosCallback(window, cursor_position_callback);
+	glfwSetMouseButtonCallback(window, mouse_button_callback);
+
 	ImGui::CreateContext();
 	ImGui_ImplGlfw_InitForOpenGL(window, true);
 	ImGui_ImplOpenGL3_Init("#version 330");
@@ -57,7 +67,6 @@ int main(void)
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);;
 
-	SceneTemplate *scene;
 	SceneMenu scenemenu;
 
 	scenemenu.register_scene<TexturedImgui>("Textured Imgui");
@@ -102,4 +111,18 @@ int main(void)
     ImGui::DestroyContext();
     glfwTerminate();
     return 0;
+}
+
+static void cursor_position_callback(GLFWwindow *window, double x, double y)
+{
+	mousex = x;
+	mousey = y;
+}
+
+static void mouse_button_callback(GLFWwindow *window, int button, int action, int mods)
+{
+	if (scene != 0)
+	{
+		scene->mouse_click_event(mousex, mousey, button, action, mods);
+	}
 }

@@ -19,4 +19,5 @@ public:
 	~FilledCircle();
 
 	void render() override;
+	void mouse_click_event(double x, double y, int button, int action, int mods) override;
 };
